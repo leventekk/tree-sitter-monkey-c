@@ -8,6 +8,9 @@ class Watch {
   // some comment about this variable
   hidden var _hiddenString = "Hidden";
 
+  public function emptyFunction(num as Number, str as String) {
+  }
+
   public function initialize(parameter) {
     return "hi";
   }

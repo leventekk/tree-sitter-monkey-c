@@ -74,7 +74,29 @@ module.exports = grammar({
     function_declaration: $ => seq(
       optional($.static),
       optional($.visibility_modifier),
-      field('name', $.identifier)
+      'function',
+      field('name', $.variable_identifier),
+      field('parameters', $.function_parameter),
+      field('body', $.function_body)
+    ),
+
+    function_parameter: $ => seq(
+      '(',
+      optional(
+        commaSep(
+          seq(
+            $.variable_identifier,
+            optional($.variable_type_definition),
+          )
+        )
+      ),
+      ')'
+    ),
+
+    function_body: $ => seq(
+      '{',
+      optional(repeat($.statement)),
+      '}'
     ),
 
     visibility_modifier: () => choice('hidden', 'public', 'protected', 'private'),
@@ -117,9 +139,17 @@ module.exports = grammar({
       ']'
     ),
 
+    return_statement: $ => seq(
+      'return',
+      $.primary_expression,
+      $.semicolon
+    ),
+
     statement: $ => choice(
       $.import_declaration,
-      $.class_declaration
+      $.field_declaration,
+      $.class_declaration,
+      $.return_statement
     ),
 
     comment: () => token(
