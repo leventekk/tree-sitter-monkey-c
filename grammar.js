@@ -4,7 +4,29 @@ module.exports = grammar({
   extras: $ => [
     $.comment,
     /[\s\p{Zs}\uFEFF\u2060\u200B]/,
+  ],
 
+  supertypes: $ => [
+    $.expression,
+    $.statement,
+    $.declaration,
+  ],
+
+  precedences: $ => [
+    [
+      'binary_times',
+      'binary_plus',
+      'binary_shift',
+      'binary_relation',
+      'binary_equality',
+      'bitwise_and',
+      'bitwise_xor',
+      'bitwise_or',
+      'logical_and',
+      'logical_or',
+    ],
+    [$.primary_expression, $.statement_block, 'object'],
+    [$.import_declaration],
   ],
 
   inline: $ => [
@@ -77,7 +99,7 @@ module.exports = grammar({
       'function',
       field('name', $.variable_identifier),
       field('parameters', $.function_parameter),
-      field('body', $.function_body)
+      field('body', $.statement_block)
     ),
 
     function_parameter: $ => seq(
@@ -93,7 +115,7 @@ module.exports = grammar({
       ')'
     ),
 
-    function_body: $ => seq(
+    statement_block: $ => seq(
       '{',
       optional(repeat($.statement)),
       '}'
@@ -110,6 +132,22 @@ module.exports = grammar({
     ),
     semicolon: () => ';',
 
+    parenthesized_expression: $ => seq(
+      '(',
+      $.expression,
+      ')'
+    ),
+
+    declaration: $ => choice(
+      $.import_declaration,
+      $.class_declaration
+    ),
+
+    expression: $ => choice(
+      $.primary_expression,
+      $.binary_expression
+    ),
+
     primary_expression: $ => choice(
       $.number,
       $.string,
@@ -118,6 +156,38 @@ module.exports = grammar({
       $.false,
       $.null,
       $.tuple_type
+    ),
+
+    binary_expression: $ => choice(
+      ...[
+        ['&&', 'logical_and'],
+        ['and', 'logical_and'],
+        ['||', 'logical_or'],
+        ['or', 'logical_or'],
+        ['>>', 'binary_shift'],
+        ['<<', 'binary_shift'],
+        ['&', 'bitwise_and'],
+        ['^', 'bitwise_xor'],
+        ['|', 'bitwise_or'],
+        ['+', 'binary_plus'],
+        ['-', 'binary_plus'],
+        ['*', 'binary_times'],
+        ['/', 'binary_times'],
+        ['%', 'binary_times'],
+        ['<', 'binary_relation'],
+        ['<=', 'binary_relation'],
+        ['==', 'binary_equality'],
+        ['!=', 'binary_equality'],
+        ['>=', 'binary_relation'],
+        ['>', 'binary_relation'],
+        ['instanceof', 'binary_relation'],
+      ].map(([operator, precedence]) =>
+        prec.left(precedence, seq(
+          field('left', $.expression),
+          field('operator', operator),
+          field('right', $.expression)
+        ))
+      )
     ),
 
     number: () => /\d/,
@@ -139,9 +209,18 @@ module.exports = grammar({
       ']'
     ),
 
+    else_clause: $ => seq('else', $.statement_block),
+
+    if_statement: $ => prec.right(seq(
+      'if',
+      field('condition', $.parenthesized_expression),
+      field('consequence', $.statement_block),
+      optional(field('alternative', $.else_clause))
+    )),
+
     return_statement: $ => seq(
       'return',
-      $.primary_expression,
+      $.expression,
       $.semicolon
     ),
 
@@ -149,6 +228,8 @@ module.exports = grammar({
       $.import_declaration,
       $.field_declaration,
       $.class_declaration,
+
+      $.if_statement,
       $.return_statement
     ),
 

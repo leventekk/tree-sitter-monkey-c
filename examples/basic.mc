@@ -9,6 +9,11 @@ class Watch {
   hidden var _hiddenString = "Hidden";
 
   public function emptyFunction(num as Number, str as String) {
+    if (10 < 9) {
+      return 1;
+    } else {
+      return 30;
+    }
   }
 
   public function initialize(parameter) {
