@@ -16,6 +16,9 @@ devDependencies:
   eslint-plugin-config:
     specifier: ^0.0.7
     version: 0.0.7
+  eslint-plugin-tree-sitter:
+    specifier: ^0.0.1
+    version: 0.0.1
   tree-sitter-cli:
     specifier: ^0.20.8
     version: 0.20.8
@@ -453,6 +456,13 @@ packages:
       eslint: 3.19.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /eslint-plugin-tree-sitter@0.0.1:
+    resolution: {integrity: sha512-H7EOMn5r+xMRdXc1qqs1vI/XF8xQxpx2rJTGuqBWlYbYv3K4ypDCm+5Jhfl7fqE50YCX39a3dEB1XyPvtYzpyg==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      requireindex: 1.2.0
     dev: true
 
   /eslint-scope@7.2.0:
@@ -1172,6 +1182,11 @@ packages:
     dependencies:
       caller-path: 0.1.0
       resolve-from: 1.0.1
+    dev: true
+
+  /requireindex@1.2.0:
+    resolution: {integrity: sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==}
+    engines: {node: '>=0.10.5'}
     dev: true
 
   /resolve-from@1.0.1:

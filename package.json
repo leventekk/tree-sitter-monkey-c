@@ -4,7 +4,7 @@
   "description": "",
   "main": "bindings/node",
   "scripts": {
-    "build": "tree-sitter generate && node-gyp build",
+    "build": "tree-sitter generate",
     "test": "tree-sitter test && script/parse-examples",
     "parse": "tree-sitter parse",
     "test-windows": "tree-sitter test",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "eslint": "^8.43.0",
     "eslint-plugin-config": "^0.0.7",
+    "eslint-plugin-tree-sitter": "^0.0.1",
     "tree-sitter-cli": "^0.20.8"
   }
 }

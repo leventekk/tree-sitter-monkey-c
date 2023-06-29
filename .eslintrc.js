@@ -4,13 +4,22 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: 'eslint:recommended',
+  globals: {
+    grammar: true,
+    field: true,
+    seq: true,
+    choice: true,
+    repeat: true,
+    repeat1: true,
+    optional: true,
+    prec: true,
+    token: true,
+    alias: true
+  },
+  extends: ['eslint:recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-  },
-  globals: {
-    grammar: true
   },
   rules: {
     indent: ['error', 2, { 'SwitchCase': 1 }],

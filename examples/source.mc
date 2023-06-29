@@ -15,7 +15,7 @@ class ZenDigitalView extends WatchUi.WatchFace {
     var screenHeight;
     var displaySeconds = false;
     var displaySecondTimezone = false;
-    var secondsLabelOrigX;
+    var secondsLabelOrigX as Number;
     hidden var isWithinGesture = false;
 
     function initialize() {
@@ -32,14 +32,16 @@ class ZenDigitalView extends WatchUi.WatchFace {
         secondsLabelOrigX = View.findDrawableById("SecondsLabel").locX;
     }
 
-    private function onShow() {
+    private function onShow() as Void {
+      screenWith = 13;
     }
 
-    protected function onHide() {
+    protected function onHide() as String{
+      return "13";
     }
 
     //! The user has just looked at their watch. Timers and animations may be started here.
-    function onExitSleep() {
+    static function onExitSleep() {
         isWithinGesture = true;
         if (App.getApp().getBooleanProperty("DisplaySeconds",true)) {
             displaySeconds = true;
@@ -227,38 +229,7 @@ class ZenDigitalView extends WatchUi.WatchFace {
         }
     }
 
-    function updateMoveWarning(dc) {
-        var activityInfo = Toybox.ActivityMonitor.getInfo();
-
-        // if the move bar level is above the minimum then display the indicator...
-        if (activityInfo.moveBarLevel > Toybox.ActivityMonitor.MOVE_BAR_LEVEL_MIN) {
-            dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
-
-            if (deviceStyle == System.SCREEN_SHAPE_ROUND || deviceStyle == System.SCREEN_SHAPE_SEMI_ROUND) {
-                var x = screenWidth/2;
-                var y = screenHeight/2;
-                var r = x-5;
-                dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
-                dc.setPenWidth(5);
-                for (var i=activityInfo.moveBarLevel-1; i > 0; i--) {
-                    dc.drawArc(x, y, x-8, Gfx.ARC_CLOCKWISE, 0+i*9, -7+i*9);
-                }
-                dc.drawArc(x, y, x-8, Gfx.ARC_CLOCKWISE, 0, 325);
-                dc.setPenWidth(1);
-            } else {
-                // nice, split up move bars (similar to the device default)
-                var barHeight = screenHeight/2;
-                var singleBarHeight = (barHeight-8)/8;
-                for (var i=activityInfo.moveBarLevel-1; i > 0; i--) {
-                    dc.fillRectangle(screenWidth-10, (barHeight+2-i*(singleBarHeight+2)), 5, singleBarHeight);
-                }
-                // if we're in the move bar section, there is at least one bar (the big one) of inactivity
-                dc.fillRectangle(screenWidth-10, screenHeight/2+2, 5, barHeight/2-2);
-            }
-        }
-    }
-
-    function updateBatteryLevel(dc) {
+    function updateBatteryLevel(dc) as Void {
         var batteryLevel = System.getSystemStats().battery;
         var x = screenWidth/2-25;
         var y = screenHeight-10;
@@ -274,7 +245,7 @@ class ZenDigitalView extends WatchUi.WatchFace {
         dc.drawRectangle(x-1, y-1, w+2, h);
     }
 
-    function hourTo12Hour(hour) {
+    function hourTo12Hour(hour) as Number {
         if (hour > 12) {
             return (hour - 12);
         } else if (hour == 0) {
@@ -283,5 +254,4 @@ class ZenDigitalView extends WatchUi.WatchFace {
         }
         return (hour);
     }
-
 }
